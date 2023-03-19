@@ -1,16 +1,16 @@
 package com.sanfen.ui;
 
-import cn.hutool.core.io.file.FileReader;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.json.JSONUtil;
+import cn.hutool.crypto.SecureUtil;
+import com.sanfen.util.FileUtils;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 登录界面
@@ -24,18 +24,7 @@ public class LoginJframe extends JFrame implements MouseListener {
      * 创建一个集合存储正确的用户名和密码
      * 从文件加载已经注册的用户数据
      */
-    static ArrayList<User> userList = new ArrayList<>();
-    static {
-        File file = new File((RegisterConstants.USER_REGISTER_DATA));
-        File[] files = file.listFiles();
-        if (files != null){
-            for (File userFile : files) {
-                FileReader reader = new FileReader(userFile);
-                User user = JSONUtil.toBean(reader.readString(), User.class);
-                userList.add(user);
-            }
-        }
-    }
+    static List<User> userList;
 
     /**
      * 登录按钮
@@ -73,6 +62,9 @@ public class LoginJframe extends JFrame implements MouseListener {
     String codeStr = RandomUtil.randomNumbers(6);
 
     public LoginJframe(){
+        // 加载最新的用户数组
+        File file = new File((RegisterConstants.USER_REGISTER_DATA));
+        userList = FileUtils.loadUsersFromDir(file);
         //初始化界面
         initJframe();
 
@@ -230,7 +222,8 @@ public class LoginJframe extends JFrame implements MouseListener {
             // 校验用户名和密码
             boolean isLogin = false;
             for (User user : userList) {
-                if (user.getUsername().equals(usernameText) && user.getPassword().equals(passwordText)){
+                if (user.getUsername().equals(usernameText) &&
+                        user.getPassword().equals(SecureUtil.sha1(passwordText))){
                     isLogin = true;
                     this.showJdialog("登录成功!");
                     this.setVisible(false);

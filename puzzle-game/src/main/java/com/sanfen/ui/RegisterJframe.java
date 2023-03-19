@@ -1,14 +1,14 @@
 package com.sanfen.ui;
 
-import cn.hutool.core.io.file.FileWriter;
+import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.json.JSONUtil;
+import cn.hutool.crypto.SecureUtil;
+import com.sanfen.util.FileUtils;
 
 import javax.swing.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
-import java.io.IOException;
 
 /**
  * 注册界面
@@ -193,26 +193,21 @@ public class RegisterJframe extends JFrame implements MouseListener {
             // 保存用户信息
             User user = new User();
             user.setUsername(usernameText);
-            user.setPassword(passwordText);
+            user.setPassword(SecureUtil.sha1(passwordText));
             File saveDir = new File(RegisterConstants.USER_REGISTER_DATA);
             if (!saveDir.exists()){
-                saveDir.mkdirs();
+                FileUtils.mkDirs(saveDir);
             }
-            File file = new File(saveDir, usernameText);
+            File file = new File(saveDir, RandomUtil.randomString(32));
             if (file.exists()){
                 this.showJdialog("用户名已存在，请更换注册名称!");
                 return;
             } else {
-                try {
-                    file.createNewFile();
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
-                }
+                FileUtils.createNewFile(file);
             }
-            FileWriter fileWriter = new FileWriter(file);
-            fileWriter.write(JSONUtil.toJsonStr(user));
+            FileUtils.writeUserToFile(file, user);
             this.showJdialog("注册成功~~");
-            this.setVisible(false);
+            this.dispose();
             // 进入登录界面
             new LoginJframe();
         } else if (source == reset) {

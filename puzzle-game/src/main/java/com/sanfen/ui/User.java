@@ -1,23 +1,20 @@
 package com.sanfen.ui;
 
+import java.io.Serializable;
+
 /**
  * 用户实体
  * @author HeJin
  * @version 1.0
  * @since 2023/03/19 14:37
  */
-public class User {
+public class User implements Serializable {
 
     String username;
 
     String password;
 
     public User() {
-    }
-
-    public User(String username, String password) {
-        this.username = username;
-        this.password = password;
     }
 
     public String getUsername() {
