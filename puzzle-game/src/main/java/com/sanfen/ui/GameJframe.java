@@ -184,6 +184,10 @@ public class GameJframe extends JFrame implements KeyListener, ActionListener {
         reLoginItem.addActionListener(this);
         closeItem.addActionListener(this);
         accountItem.addActionListener(this);
+        // 更换图片的绑定事件
+        girlItem.addActionListener(this);
+        animalItem.addActionListener(this);
+        sportItem.addActionListener(this);
 
         // JMenu添加到JMenuBar
         jMenuBar.add(functionJmenu);
