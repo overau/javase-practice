@@ -1,12 +1,15 @@
 package com.sanfen.ui;
 
+import cn.hutool.core.io.file.FileReader;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONUtil;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.File;
 import java.util.ArrayList;
 
 /**
@@ -19,11 +22,19 @@ public class LoginJframe extends JFrame implements MouseListener {
 
     /**
      * 创建一个集合存储正确的用户名和密码
+     * 从文件加载已经注册的用户数据
      */
     static ArrayList<User> userList = new ArrayList<>();
     static {
-        userList.add(new User("admin","123456"));
-        userList.add(new User("lisi","123456"));
+        File file = new File((RegisterConstants.USER_REGISTER_DATA));
+        File[] files = file.listFiles();
+        if (files != null){
+            for (File userFile : files) {
+                FileReader reader = new FileReader(userFile);
+                User user = JSONUtil.toBean(reader.readString(), User.class);
+                userList.add(user);
+            }
+        }
     }
 
     /**
