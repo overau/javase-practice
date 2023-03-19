@@ -62,6 +62,13 @@ public class GameJframe extends JFrame implements KeyListener, ActionListener {
     JMenuItem closeItem = new JMenuItem("关闭游戏");
     JMenuItem accountItem = new JMenuItem("公众号");
 
+    /**
+     * 更换图片
+     */
+    JMenuItem girlItem = new JMenuItem("美女");
+    JMenuItem animalItem = new JMenuItem("动物");
+    JMenuItem sportItem = new JMenuItem("运动");
+
     public GameJframe() {
         // 初始化界面
         this.initJframe();
@@ -158,6 +165,13 @@ public class GameJframe extends JFrame implements KeyListener, ActionListener {
         // JMenu
         JMenu functionJmenu = new JMenu("功能");
         JMenu aboutJmenu = new JMenu("关于我们");
+
+        // 更换图片
+        JMenu changeImage = new JMenu("更换图片");
+        changeImage.add(girlItem);
+        changeImage.add(animalItem);
+        changeImage.add(sportItem);
+        functionJmenu.add(changeImage);
 
         // MenuItem添加到对于的JMenu
         functionJmenu.add(replayItem);
