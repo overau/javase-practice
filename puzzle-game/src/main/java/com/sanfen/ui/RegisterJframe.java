@@ -1,8 +1,14 @@
 package com.sanfen.ui;
 
+import cn.hutool.core.io.file.FileWriter;
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONUtil;
+
 import javax.swing.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.File;
+import java.io.IOException;
 
 /**
  * 注册界面
@@ -30,12 +36,12 @@ public class RegisterJframe extends JFrame implements MouseListener {
     /**
      * 注册密码输入框
      */
-    JTextField password = new JTextField();
+    JTextField password = new JPasswordField();
 
     /**
      * 注册密码确认框
      */
-    JTextField rePassword = new JTextField();
+    JTextField rePassword = new JPasswordField();
 
     public RegisterJframe(){
         //初始化界面
@@ -166,7 +172,49 @@ public class RegisterJframe extends JFrame implements MouseListener {
         if (source == register){
             // 注册逻辑
             register.setIcon(new ImageIcon(RegisterConstants.REGISTER_BUTTON_IMAGE));
-
+            String usernameText = username.getText();
+            String passwordText = password.getText();
+            String rePasswordText = rePassword.getText();
+            if (StrUtil.isBlank(usernameText)){
+                this.showJdialog("请输入用户名!");
+                return;
+            } else if (StrUtil.isBlank(passwordText)){
+                this.showJdialog("请输入密码!");
+                return;
+            } else if (StrUtil.isBlank(rePasswordText)){
+                this.showJdialog("请确认密码!");
+                return;
+            }
+            // 判断两次输入的密码是否一致
+            if (!passwordText.equals(rePasswordText)){
+                this.showJdialog("请确保两次输入的密码一致!");
+                return;
+            }
+            // 保存用户信息
+            User user = new User();
+            user.setUsername(usernameText);
+            user.setPassword(passwordText);
+            File saveDir = new File(RegisterConstants.USER_REGISTER_DATA);
+            if (!saveDir.exists()){
+                saveDir.mkdirs();
+            }
+            File file = new File(saveDir, usernameText);
+            if (file.exists()){
+                this.showJdialog("用户名已存在，请更换注册名称!");
+                return;
+            } else {
+                try {
+                    file.createNewFile();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+            FileWriter fileWriter = new FileWriter(file);
+            fileWriter.write(JSONUtil.toJsonStr(user));
+            this.showJdialog("注册成功~~");
+            this.setVisible(false);
+            // 进入登录界面
+            new LoginJframe();
         } else if (source == reset) {
             // 重置逻辑
             reset.setIcon(new ImageIcon(RegisterConstants.RESET_BUTTON_IMAGE));

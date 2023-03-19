@@ -49,4 +49,6 @@ public class RegisterConstants {
      */
     public static final String BACKGROUND_IMAGE = "puzzle-game\\image\\register\\background.png";
 
+    public static final String USER_REGISTER_DATA = "puzzle-game\\data\\user\\";
+
 }
