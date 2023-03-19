@@ -1,9 +1,12 @@
 package com.sanfen.ui;
 
 import cn.hutool.core.util.RandomUtil;
+import cn.hutool.core.util.StrUtil;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 
 /**
@@ -12,16 +15,51 @@ import java.util.ArrayList;
  * @version 1.0
  * @since 2023/03/18 13:46
  */
-public class LoginJframe extends JFrame {
+public class LoginJframe extends JFrame implements MouseListener {
 
     /**
      * 创建一个集合存储正确的用户名和密码
      */
-    static ArrayList<User> list = new ArrayList<>();
+    static ArrayList<User> userList = new ArrayList<>();
     static {
-        list.add(new User("zhangsan","123"));
-        list.add(new User("lisi","1234"));
+        userList.add(new User("admin","123456"));
+        userList.add(new User("lisi","123456"));
     }
+
+    /**
+     * 登录按钮
+     */
+    JButton login = new JButton();
+
+    /**
+     * 注册按钮
+     */
+    JButton register = new JButton();
+
+    /**
+     * 用户名输入框
+     */
+    JTextField username = new JTextField();
+
+    /**
+     * 密码输入框
+     */
+    JPasswordField password = new JPasswordField();
+
+    /**
+     * 验证码输入框
+     */
+    JTextField code = new JTextField();
+
+    /**
+     * 生成的验证码显示组件
+     */
+    JLabel rightCode = new JLabel();
+
+    /**
+     * 生成的验证码
+     */
+    String codeStr = RandomUtil.randomNumbers(6);
 
     public LoginJframe(){
         //初始化界面
@@ -36,38 +74,33 @@ public class LoginJframe extends JFrame {
 
     public void initView() {
         //1. 添加用户名文字
-        JLabel usernameText = new JLabel(new ImageIcon("puzzle-game\\image\\login\\用户名.png"));
+        JLabel usernameText = new JLabel(new ImageIcon(LoginConstants.USERNAME_IMAGE));
         usernameText.setBounds(116, 135, 47, 17);
         this.getContentPane().add(usernameText);
 
         //2.添加用户名输入框
-        JTextField username = new JTextField();
         username.setBounds(195, 134, 200, 30);
         this.getContentPane().add(username);
 
         //3.添加密码文字
-        JLabel passwordText = new JLabel(new ImageIcon("puzzle-game\\image\\login\\密码.png"));
+        JLabel passwordText = new JLabel(new ImageIcon(LoginConstants.PASSWORD_IMAGE));
         passwordText.setBounds(130, 195, 32, 16);
         this.getContentPane().add(passwordText);
 
         //4.密码输入框
-        JTextField password = new JTextField();
         password.setBounds(195, 195, 200, 30);
         this.getContentPane().add(password);
 
         //验证码提示
-        JLabel codeText = new JLabel(new ImageIcon("puzzle-game\\image\\login\\验证码.png"));
+        JLabel codeText = new JLabel(new ImageIcon(LoginConstants.CODE_IMAGE));
         codeText.setBounds(133, 256, 50, 30);
         this.getContentPane().add(codeText);
 
         //验证码的输入框
-        JTextField code = new JTextField();
         code.setBounds(195, 256, 100, 30);
         this.getContentPane().add(code);
 
-        String codeStr = RandomUtil.randomNumbers(6);
-        JLabel rightCode = new JLabel();
-        rightCode.setFont(new Font(null, Font.BOLD, 25));
+        rightCode.setFont(new Font("Comic Sans MS", Font.BOLD, 25));
         rightCode.setForeground(Color.MAGENTA);
         //设置内容
         rightCode.setText(codeStr);
@@ -77,9 +110,8 @@ public class LoginJframe extends JFrame {
         this.getContentPane().add(rightCode);
 
         //5.添加登录按钮
-        JButton login = new JButton();
         login.setBounds(123, 310, 128, 47);
-        login.setIcon(new ImageIcon("puzzle-game\\image\\login\\登录按钮.png"));
+        login.setIcon(new ImageIcon(LoginConstants.LOGIN_BUTTON_IMAGE));
         //去除按钮的默认边框
         login.setBorderPainted(false);
         //去除按钮的默认背景
@@ -87,17 +119,21 @@ public class LoginJframe extends JFrame {
         this.getContentPane().add(login);
 
         //6.添加注册按钮
-        JButton register = new JButton();
         register.setBounds(256, 310, 128, 47);
-        register.setIcon(new ImageIcon("puzzle-game\\image\\login\\注册按钮.png"));
+        register.setIcon(new ImageIcon(LoginConstants.REGISTER_BUTTON_IMAGE));
         //去除按钮的默认边框
         register.setBorderPainted(false);
         //去除按钮的默认背景
         register.setContentAreaFilled(false);
         this.getContentPane().add(register);
 
+        // 添加事件
+        login.addMouseListener(this);
+        register.addMouseListener(this);
+        rightCode.addMouseListener(this);
+
         //7.添加背景图片
-        JLabel background = new JLabel(new ImageIcon("puzzle-game\\image\\login\\background.png"));
+        JLabel background = new JLabel(new ImageIcon(LoginConstants.BACKGROUND_IMAGE));
         background.setBounds(0, 0, 470, 390);
         this.getContentPane().add(background);
     }
@@ -144,4 +180,75 @@ public class LoginJframe extends JFrame {
         jDialog.setVisible(true);
     }
 
+    @Override
+    public void mouseClicked(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+        Object source = e.getSource();
+        if (source == login){
+            login.setIcon(new ImageIcon(LoginConstants.LOGIN_PRESS_BUTTON_IMAGE));
+        } else if (source == register) {
+            register.setIcon(new ImageIcon(LoginConstants.REGISTER_PRESS_BUTTON_IMAGE));
+        }
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+        Object source = e.getSource();
+        if (source == login){
+            // 登录逻辑
+            login.setIcon(new ImageIcon(LoginConstants.LOGIN_BUTTON_IMAGE));
+            // 没有输入用户名或密码
+            String usernameText = username.getText();
+            String passwordText = new String(password.getPassword());
+            if (StrUtil.isBlank(usernameText) || StrUtil.isBlank(passwordText)){
+                this.showJdialog("请输入用户名和密码");
+                return;
+            }
+            // 校验验证码
+            if (!code.getText().equals(codeStr)){
+                this.showJdialog("验证码错误!");
+                code.setText("");
+                codeStr = RandomUtil.randomNumbers(6);
+                rightCode.setText(codeStr);
+                return;
+            }
+            // 校验用户名和密码
+            boolean isLogin = false;
+            for (User user : userList) {
+                if (user.getUsername().equals(usernameText) && user.getPassword().equals(passwordText)){
+                    isLogin = true;
+                    this.showJdialog("登录成功!");
+                    this.setVisible(false);
+                    new GameJframe();
+                }
+            }
+            if (!isLogin){
+                this.showJdialog("用户名或者密码错误!");
+                code.setText("");
+                codeStr = RandomUtil.randomNumbers(6);
+                rightCode.setText(codeStr);
+            }
+        } else if (source == register) {
+            // 注册逻辑
+            register.setIcon(new ImageIcon(LoginConstants.REGISTER_BUTTON_IMAGE));
+        } else if (source == rightCode) {
+            // 更换验证码
+            codeStr = RandomUtil.randomNumbers(6);
+            rightCode.setText(codeStr);
+        }
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+
+    }
 }

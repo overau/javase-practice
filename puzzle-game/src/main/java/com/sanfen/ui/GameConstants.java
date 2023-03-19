@@ -1,6 +1,7 @@
 package com.sanfen.ui;
 
 /**
+ * 游戏主界面常量
  * @author HeJin
  * @version 1.0
  * @since 2023/03/18 16:37

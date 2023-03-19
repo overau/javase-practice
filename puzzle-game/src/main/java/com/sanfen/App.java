@@ -1,8 +1,6 @@
 package com.sanfen;
 
-import com.sanfen.ui.GameJframe;
 import com.sanfen.ui.LoginJframe;
-import com.sanfen.ui.RegisterJframe;
 
 /**
  * 游戏启动入口
@@ -13,8 +11,7 @@ import com.sanfen.ui.RegisterJframe;
 public class App {
 
     public static void main(String[] args) {
-        new GameJframe();
-        //new LoginJframe();
+        new LoginJframe();
         //new RegisterJframe();
     }
 
