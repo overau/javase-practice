@@ -235,6 +235,8 @@ public class LoginJframe extends JFrame implements MouseListener {
         } else if (source == register) {
             // 注册逻辑
             register.setIcon(new ImageIcon(LoginConstants.REGISTER_BUTTON_IMAGE));
+            this.setVisible(false);
+            new RegisterJframe();
         } else if (source == rightCode) {
             // 更换验证码
             codeStr = RandomUtil.randomNumbers(6);
