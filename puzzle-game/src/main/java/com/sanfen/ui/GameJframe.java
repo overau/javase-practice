@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.File;
 import java.util.Random;
 
 /**
@@ -47,7 +48,7 @@ public class GameJframe extends JFrame implements KeyListener, ActionListener {
     /**
      * 图片路径
      */
-    String path = "puzzle-game\\image\\animal\\animal3\\";
+    String path = GameConstants.DEFAULT_IMAGE_FOLDER;
 
     /**
      * 统计步数
@@ -118,7 +119,7 @@ public class GameJframe extends JFrame implements KeyListener, ActionListener {
 
         // 判断游戏是否胜利
         if (this.victory()) {
-            ImageIcon bg = new ImageIcon("puzzle-game\\image\\win.png");
+            ImageIcon bg = new ImageIcon(GameConstants.WIN_IMAGE);
             JLabel win = new JLabel(bg);
             win.setBounds(203, 283, bg.getIconWidth(), bg.getIconHeight());
             this.getContentPane().add(win);
@@ -148,7 +149,7 @@ public class GameJframe extends JFrame implements KeyListener, ActionListener {
         }
 
         // 添加背景图片
-        ImageIcon bg = new ImageIcon("puzzle-game\\image\\background.png");
+        ImageIcon bg = new ImageIcon(GameConstants.BACKGROUND_IMAGE);
         JLabel background = new JLabel(bg);
         background.setBounds(40, 40, 508, 560);
         this.getContentPane().add(background);
@@ -236,7 +237,7 @@ public class GameJframe extends JFrame implements KeyListener, ActionListener {
             jLabel.setBounds(83, 134, 420, 420);
             this.getContentPane().add(jLabel);
             // 加载背景图片
-            ImageIcon bg = new ImageIcon("puzzle-game\\image\\background.png");
+            ImageIcon bg = new ImageIcon(GameConstants.BACKGROUND_IMAGE);
             JLabel background = new JLabel(bg);
             background.setBounds(40, 40, 508, 560);
             this.getContentPane().add(background);
@@ -330,7 +331,7 @@ public class GameJframe extends JFrame implements KeyListener, ActionListener {
             };
             this.getContentPane().removeAll();
             // 加载胜利图片
-            ImageIcon bg = new ImageIcon("puzzle-game\\image\\win.png");
+            ImageIcon bg = new ImageIcon(GameConstants.WIN_IMAGE);
             JLabel background = new JLabel(bg);
             background.setBounds(40, 40, 508, 560);
             this.getContentPane().add(background);
@@ -378,7 +379,7 @@ public class GameJframe extends JFrame implements KeyListener, ActionListener {
         } else if (source == accountItem) {
             System.out.println("公众号");
             JDialog jDialog = new JDialog();
-            JLabel jLabel = new JLabel(new ImageIcon("puzzle-game\\image\\about.png"));
+            JLabel jLabel = new JLabel(new ImageIcon(GameConstants.ACCOUNT_IMAGE));
             jLabel.setBounds(0, 0, 258, 258);
             jDialog.add(jLabel);
             // 设置弹框大小
@@ -391,6 +392,33 @@ public class GameJframe extends JFrame implements KeyListener, ActionListener {
             jDialog.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
             // 显示弹框
             jDialog.setVisible(true);
+        } else if (source == girlItem) {
+            // 美女
+            this.changeImage(GameConstants.GIRL_FOLDER);
+        } else if (source == animalItem) {
+            // 动物
+            this.changeImage(GameConstants.ANIMAL_FOLDER);
+        } else if (source == sportItem) {
+            // 运动
+            this.changeImage(GameConstants.SPORT_FOLDER);
         }
+    }
+
+    /**
+     * 更换图片
+     * @param imagePath 图片路径
+     */
+    private void changeImage(String imagePath){
+        File file = new File(imagePath);
+        File[] files = file.listFiles();
+        if (files == null){
+            return;
+        }
+        int index = new Random().nextInt(files.length);
+        path = files[index].getPath() + "\\";
+        // 打乱二维数组
+        this.initData();
+        // 重新加载图片
+        this.initImage();
     }
 }
