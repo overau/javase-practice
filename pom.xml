@@ -10,6 +10,7 @@
     <modules>
         <module>roll-call</module>
         <module>puzzle-game</module>
+        <module>doudizhu</module>
     </modules>
 
     <properties>
