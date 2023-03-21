@@ -1,6 +1,6 @@
 package com.sanfen;
 
-import com.sanfen.game.LoginJframe;
+import com.sanfen.game.GameJframe;
 
 /**
  * @author HeJin
@@ -10,7 +10,7 @@ import com.sanfen.game.LoginJframe;
 public class App {
 
     public static void main(String[] args) {
-        new LoginJframe();
+        new GameJframe();
     }
 
 }
