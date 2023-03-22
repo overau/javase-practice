@@ -12,6 +12,7 @@
         <module>puzzle-game</module>
         <module>doudizhu</module>
         <module>farmerandlord</module>
+        <module>common-api</module>
     </modules>
 
     <properties>
