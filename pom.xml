@@ -13,6 +13,7 @@
         <module>doudizhu</module>
         <module>farmerandlord</module>
         <module>common-api</module>
+        <module>lambda-stream</module>
     </modules>
 
     <properties>
