@@ -19,6 +19,8 @@ public class StreamTest {
 
         List<Integer> collect = list.stream()
                 .filter(i -> i >= 3)
+                .sorted((o1, o2) -> o2 - o1)
+                .limit(1)
                 .collect(Collectors.toList());
         System.out.println(collect);
     }
