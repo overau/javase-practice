@@ -1,4 +1,4 @@
-package com.sanfen;
+package com.sanfen.search;
 
 /**
  * 分块查找

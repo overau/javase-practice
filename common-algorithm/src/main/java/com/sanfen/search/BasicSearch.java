@@ -1,4 +1,4 @@
-package com.sanfen;
+package com.sanfen.search;
 
 import java.util.ArrayList;
 import java.util.List;
