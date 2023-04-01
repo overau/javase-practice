@@ -13,7 +13,7 @@ public class Student implements Serializable {
 
     private String name;
 
-    private transient Integer age;
+    private Integer age;
 
     public Student() {
     }
