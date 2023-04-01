@@ -27,7 +27,7 @@ public class OrderedCsb {
         }
         // strings排序
         List<String> sortedStrings = strings.stream()
-                .sorted(Comparator.comparingInt(o -> Integer.parseInt(o.substring(0, 1))))
+                .sorted(Comparator.comparingInt(o -> Integer.parseInt(o.split("\\.")[0])))
                 .collect(Collectors.toList());
         // 写出排序文本到文件
         for (String str : sortedStrings) {
