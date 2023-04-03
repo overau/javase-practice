@@ -33,12 +33,22 @@ public class WebCrawler {
         String boyNameStr = webCrawler(boyNameNet);
         String girlNameStr = webCrawler(girlNameNet);
 
-        // 正则表达式获取数据
+        // 获取百家姓
         List<String> familyNameTempList = getData(familyNameStr, "(.{4})(，|。)", 1);
         List<String> familyNames = familyNameTempList.stream()
                 .flatMap(f -> Arrays.stream(f.split("")))
                 .collect(Collectors.toList());
-        System.out.println(familyNames);
+
+        // 获取男性名字
+        List<String> boyNames = getData(boyNameStr, "([\\u4E00-\\u9FA5]{2})(、|。)", 1);
+        System.out.println(boyNames);
+
+        // 获取女性名字
+        List<String> girlNameTempList = getData(girlNameStr, "(.. ){4}..", 0);
+        List<String> girlNames = girlNameTempList.stream()
+                .flatMap(name -> Arrays.stream(name.split(" ")))
+                .collect(Collectors.toList());
+        System.out.println(girlNames);
     }
 
     /**
