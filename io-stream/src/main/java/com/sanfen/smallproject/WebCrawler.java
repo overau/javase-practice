@@ -38,12 +38,15 @@ public class WebCrawler {
         List<String> familyNames = familyNameTempList.stream()
                 .flatMap(f -> Arrays.stream(f.split("")))
                 .collect(Collectors.toList());
+        System.out.println(familyNames);
 
         // 获取男性名字
-        List<String> boyNames = getData(boyNameStr, "([\\u4E00-\\u9FA5]{2})(、|。)", 1);
+        List<String> boyNameTempList = getData(boyNameStr, "([\\u4E00-\\u9FA5]{2})(、|。)", 1);
+        List<String> boyNames = boyNameTempList.stream().distinct().collect(Collectors.toList());
         System.out.println(boyNames);
 
         // 获取女性名字
+
         List<String> girlNameTempList = getData(girlNameStr, "(.. ){4}..", 0);
         List<String> girlNames = girlNameTempList.stream()
                 .flatMap(name -> Arrays.stream(name.split(" ")))
