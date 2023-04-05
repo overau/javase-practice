@@ -16,4 +16,10 @@ public class Student {
 
     private Integer age;
 
+    private Double weight;
+
+    @Override
+    public String toString() {
+        return name + "-" + (gender.equals(0) ? "女" : "男") + "-" + age + "-" + weight;
+    }
 }
