@@ -9,11 +9,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.io.File;
+import java.io.*;
 import java.util.List;
 
 /**
  * 登录界面
+ *
  * @author HeJin
  * @version 1.0
  * @since 2023/03/18 13:46
@@ -61,7 +62,7 @@ public class LoginJframe extends JFrame implements MouseListener {
      */
     String codeStr = RandomUtil.randomNumbers(6);
 
-    public LoginJframe(){
+    public LoginJframe() {
         // 加载最新的用户数组
         File file = new File((RegisterConstants.USER_REGISTER_DATA));
         userList = FileUtils.loadUsersFromDir(file);
@@ -160,6 +161,7 @@ public class LoginJframe extends JFrame implements MouseListener {
 
     /**
      * 要展示用户名或密码错误
+     *
      * @param content 内容
      */
     public void showJdialog(String content) {
@@ -191,7 +193,7 @@ public class LoginJframe extends JFrame implements MouseListener {
     @Override
     public void mousePressed(MouseEvent e) {
         Object source = e.getSource();
-        if (source == login){
+        if (source == login) {
             login.setIcon(new ImageIcon(LoginConstants.LOGIN_PRESS_BUTTON_IMAGE));
         } else if (source == register) {
             register.setIcon(new ImageIcon(LoginConstants.REGISTER_PRESS_BUTTON_IMAGE));
@@ -201,18 +203,18 @@ public class LoginJframe extends JFrame implements MouseListener {
     @Override
     public void mouseReleased(MouseEvent e) {
         Object source = e.getSource();
-        if (source == login){
+        if (source == login) {
             // 登录逻辑
             login.setIcon(new ImageIcon(LoginConstants.LOGIN_BUTTON_IMAGE));
             // 没有输入用户名或密码
             String usernameText = username.getText();
             String passwordText = new String(password.getPassword());
-            if (StrUtil.isBlank(usernameText) || StrUtil.isBlank(passwordText)){
+            if (StrUtil.isBlank(usernameText) || StrUtil.isBlank(passwordText)) {
                 this.showJdialog("请输入用户名和密码");
                 return;
             }
             // 校验验证码
-            if (!code.getText().equals(codeStr)){
+            if (!code.getText().equals(codeStr)) {
                 this.showJdialog("验证码错误!");
                 code.setText("");
                 codeStr = RandomUtil.randomNumbers(6);
@@ -220,22 +222,43 @@ public class LoginJframe extends JFrame implements MouseListener {
                 return;
             }
             // 校验用户名和密码
-            boolean isLogin = false;
             for (User user : userList) {
                 if (user.getUsername().equals(usernameText) &&
-                        user.getPassword().equals(SecureUtil.sha1(passwordText))){
-                    isLogin = true;
+                        user.getPassword().equals(SecureUtil.sha1(passwordText))) {
+                    try {
+                        // 判断用户是否被锁定(密码连续输错3次)
+                        int passwordErrorCount = this.getPasswordErrorCount(usernameText);
+                        if (passwordErrorCount >= 3) {
+                            this.showJdialog("密码连续输错3次，当前账号被锁定!");
+                            this.setVisible(false);
+                            System.exit(0);
+                        }
+                        // 密码输入成功，清除密码连续输错次数的记录
+                        this.setPasswordErrorCount(usernameText, 0);
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
+                    }
+
                     this.showJdialog("登录成功!");
                     this.setVisible(false);
                     new GameJframe();
+                    return;
                 }
             }
-            if (!isLogin){
-                this.showJdialog("用户名或者密码错误!");
-                code.setText("");
-                codeStr = RandomUtil.randomNumbers(6);
-                rightCode.setText(codeStr);
+            // 用户已经注册，记录连续密码错误次数到文件
+            if(userList.stream().map(User::getUsername).anyMatch(u -> u.equals(usernameText))){
+                try {
+                    int passwordErrorCount = this.getPasswordErrorCount(usernameText);
+                    this.setPasswordErrorCount(usernameText, (++passwordErrorCount));
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
+
+            this.showJdialog("用户名或者密码错误!");
+            code.setText("");
+            codeStr = RandomUtil.randomNumbers(6);
+            rightCode.setText(codeStr);
         } else if (source == register) {
             // 注册逻辑
             register.setIcon(new ImageIcon(LoginConstants.REGISTER_BUTTON_IMAGE));
@@ -246,6 +269,35 @@ public class LoginJframe extends JFrame implements MouseListener {
             codeStr = RandomUtil.randomNumbers(6);
             rightCode.setText(codeStr);
         }
+    }
+
+    /**
+     * 根据账户名获取密码连续输错次数
+     * <p>文件名称: 用户名</p>
+     * <p>文件内容: 密码连续输错次数</p>
+     *
+     * @param username 用户账号
+     * @return 密码连续输错次数
+     */
+    private int getPasswordErrorCount(String username) throws IOException {
+        BufferedReader br = new BufferedReader(
+                new FileReader(LoginConstants.USER_PASSWORD_ERROR + username + ".txt"));
+        String countStr = br.readLine();
+        br.close();
+        return Integer.parseInt(countStr);
+    }
+
+    /**
+     * 保存密码连续错误次数到文件
+     *
+     * @param username 用户账号
+     * @param count    密码连续错误次数
+     */
+    private void setPasswordErrorCount(String username, int count) throws IOException {
+        BufferedWriter bw = new BufferedWriter(
+                new FileWriter(new File(LoginConstants.USER_PASSWORD_ERROR, username + ".txt")));
+        bw.write(count + "");
+        bw.close();
     }
 
     @Override

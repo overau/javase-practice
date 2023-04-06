@@ -48,4 +48,8 @@ public class LoginConstants {
      */
     public static final String BACKGROUND_IMAGE = "puzzle-game\\image\\login\\background.png";
 
+    /**
+     * 密码连续错误次数文件目录
+     */
+    public static final String USER_PASSWORD_ERROR = "puzzle-game\\data\\password\\";
 }
