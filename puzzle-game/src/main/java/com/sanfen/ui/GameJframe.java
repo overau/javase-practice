@@ -63,6 +63,21 @@ public class GameJframe extends JFrame implements KeyListener, ActionListener {
     JMenuItem closeItem = new JMenuItem("关闭游戏");
     JMenuItem accountItem = new JMenuItem("公众号");
 
+    JMenu saveJmenu = new JMenu("存档");
+    JMenu loadJmenu = new JMenu("读档");
+
+    JMenuItem saveItem0 = new JMenuItem("存档0(空)");
+    JMenuItem saveItem1 = new JMenuItem("存档1(空)");
+    JMenuItem saveItem2 = new JMenuItem("存档2(空)");
+    JMenuItem saveItem3 = new JMenuItem("存档3(空)");
+    JMenuItem saveItem4 = new JMenuItem("存档4(空)");
+
+    JMenuItem loadItem0 = new JMenuItem("读档0(空)");
+    JMenuItem loadItem1 = new JMenuItem("读档1(空)");
+    JMenuItem loadItem2 = new JMenuItem("读档2(空)");
+    JMenuItem loadItem3 = new JMenuItem("读档3(空)");
+    JMenuItem loadItem4 = new JMenuItem("读档4(空)");
+
     /**
      * 更换图片
      */
@@ -172,12 +187,29 @@ public class GameJframe extends JFrame implements KeyListener, ActionListener {
         changeImage.add(girlItem);
         changeImage.add(animalItem);
         changeImage.add(sportItem);
-        functionJmenu.add(changeImage);
 
-        // MenuItem添加到对于的JMenu
+        //把5个存档，添加到saveJmenu中
+        saveJmenu.add(saveItem0);
+        saveJmenu.add(saveItem1);
+        saveJmenu.add(saveItem2);
+        saveJmenu.add(saveItem3);
+        saveJmenu.add(saveItem4);
+
+        //把5个读档，添加到loadJMenu中
+        loadJmenu.add(loadItem0);
+        loadJmenu.add(loadItem1);
+        loadJmenu.add(loadItem2);
+        loadJmenu.add(loadItem3);
+        loadJmenu.add(loadItem4);
+
+        // 将更换图片，重新游戏，重新登录，关闭游戏，存档，读档添加到“功能”选项当中
+        functionJmenu.add(changeImage);
         functionJmenu.add(replayItem);
         functionJmenu.add(reLoginItem);
         functionJmenu.add(closeItem);
+        functionJmenu.add(saveJmenu);
+        functionJmenu.add(loadJmenu);
+
         aboutJmenu.add(accountItem);
 
         // 绑定事件
@@ -189,6 +221,17 @@ public class GameJframe extends JFrame implements KeyListener, ActionListener {
         girlItem.addActionListener(this);
         animalItem.addActionListener(this);
         sportItem.addActionListener(this);
+        // 存档读档
+        saveItem0.addActionListener(this);
+        saveItem1.addActionListener(this);
+        saveItem2.addActionListener(this);
+        saveItem3.addActionListener(this);
+        saveItem4.addActionListener(this);
+        loadItem0.addActionListener(this);
+        loadItem1.addActionListener(this);
+        loadItem2.addActionListener(this);
+        loadItem3.addActionListener(this);
+        loadItem4.addActionListener(this);
 
         // JMenu添加到JMenuBar
         jMenuBar.add(functionJmenu);
