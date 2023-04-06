@@ -78,4 +78,9 @@ public class GameConstants {
      */
     public static final String SPORT_FOLDER = "puzzle-game\\image\\sport";
 
+    /**
+     * 游戏存档数据位置
+     */
+    public static final String GAME_ARCHIVE_FOLDER = "puzzle-game\\data\\save\\";
+
 }

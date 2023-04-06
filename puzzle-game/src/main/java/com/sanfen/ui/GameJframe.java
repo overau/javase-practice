@@ -1,5 +1,8 @@
 package com.sanfen.ui;
 
+import cn.hutool.core.io.IoUtil;
+import com.sanfen.domain.GameInfo;
+
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
 import java.awt.*;
@@ -7,7 +10,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.io.File;
+import java.io.*;
+import java.nio.file.Files;
 import java.util.Random;
 
 /**
@@ -91,6 +95,9 @@ public class GameJframe extends JFrame implements KeyListener, ActionListener {
 
         // 初始化菜单
         this.initJmenuBar();
+
+        // 加载存档数据
+        this.getGameInfo();
 
         // 初始化数据
         this.initData();
@@ -238,6 +245,29 @@ public class GameJframe extends JFrame implements KeyListener, ActionListener {
         jMenuBar.add(aboutJmenu);
         // 给整个界面设置菜单
         this.setJMenuBar(jMenuBar);
+    }
+
+    /**
+     * 加载游戏存档数据
+     */
+    private void getGameInfo() {
+        File saveDir = new File(GameConstants.GAME_ARCHIVE_FOLDER);
+        File[] saveFiles = saveDir.listFiles();
+        if (saveFiles != null) {
+            for (File file : saveFiles) {
+                try {
+                    ObjectInputStream ois = new ObjectInputStream(Files.newInputStream(file.toPath()));
+                    GameInfo gameInfo = (GameInfo) ois.readObject();
+                    ois.close();
+                    // 修改(存档和读档item)上的展示信息
+                    int index = file.getName().charAt(4) - '0';
+                    saveJmenu.getItem(index).setText("存档" + index + "(" + gameInfo.getStep() + "步)");
+                    loadJmenu.getItem(index).setText("存档" + index + "(" + gameInfo.getStep() + "步)");
+                } catch (IOException | ClassNotFoundException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+        }
     }
 
     /**
@@ -444,17 +474,59 @@ public class GameJframe extends JFrame implements KeyListener, ActionListener {
         } else if (source == sportItem) {
             // 运动
             this.changeImage(GameConstants.SPORT_FOLDER);
+        } else if (source == saveItem0 || source == saveItem1 || source == saveItem2 || source == saveItem3 || source == saveItem4) {
+            // 获取当前哪个存档被点击了，获取其中的序号
+            JMenuItem item = (JMenuItem) source;
+            int index = item.getText().charAt(2) - '0';
+            // 游戏的数据写到本地
+            System.out.println("存档: " + GameConstants.GAME_ARCHIVE_FOLDER + "save" + index + ".data");
+            try {
+                FileOutputStream fos = new FileOutputStream(GameConstants.GAME_ARCHIVE_FOLDER + "save" + index + ".data");
+                ObjectOutputStream oos = new ObjectOutputStream(fos);
+                GameInfo gameInfo = new GameInfo(zeroX, zeroY, path, step, data);
+                IoUtil.writeObj(oos, true, gameInfo);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+            // 修改(存档和读档item)上的展示信息
+            item.setText("存档" + index + "(" + step + "步)");
+            loadJmenu.getItem(index).setText("存档" + index + "(" + step + "步)");
+        } else if (source == loadItem0 || source == loadItem1 || source == loadItem2 || source == loadItem3 || source == loadItem4) {
+            // 获取当前哪个存档被点击了，获取其中的序号
+            JMenuItem item = (JMenuItem) source;
+            int index = item.getText().charAt(2) - '0';
+            System.out.println("读档: " + GameConstants.GAME_ARCHIVE_FOLDER + "save" + index + ".data");
+            try {
+                FileInputStream fis = new FileInputStream(GameConstants.GAME_ARCHIVE_FOLDER + "save" + index + ".data");
+                ObjectInputStream ois = new ObjectInputStream(fis);
+                GameInfo gameInfo = (GameInfo) ois.readObject();
+                ois.close();
+                fis.close();
+                this.zeroX = gameInfo.getZeroX();
+                this.zeroY = gameInfo.getZeroY();
+                this.path = gameInfo.getPath();
+                this.step = gameInfo.getStep();
+                this.data = gameInfo.getData();
+                // 刷新界面，加载游戏
+                this.initImage();
+            } catch (IOException | ClassNotFoundException ex) {
+                throw new RuntimeException(ex);
+            }
         }
     }
 
     /**
      * 更换图片
+     *
      * @param imagePath 图片路径
      */
-    private void changeImage(String imagePath){
+    private void changeImage(String imagePath) {
+        // 步数统计清零
+        step = 0;
+
         File file = new File(imagePath);
         File[] files = file.listFiles();
-        if (files == null){
+        if (files == null) {
             return;
         }
         int index = new Random().nextInt(files.length);
