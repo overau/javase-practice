@@ -1,6 +1,6 @@
 package com.sanfen.util;
 
-import com.sanfen.ui.User;
+import com.sanfen.domain.User;
 
 import java.io.File;
 import java.io.IOException;

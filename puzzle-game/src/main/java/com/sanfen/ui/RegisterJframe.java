@@ -3,6 +3,7 @@ package com.sanfen.ui;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.SecureUtil;
+import com.sanfen.domain.User;
 import com.sanfen.util.FileUtils;
 
 import javax.swing.*;

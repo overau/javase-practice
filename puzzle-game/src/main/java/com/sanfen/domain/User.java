@@ -1,4 +1,4 @@
-package com.sanfen.ui;
+package com.sanfen.domain;
 
 import java.io.Serializable;
 
