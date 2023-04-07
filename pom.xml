@@ -16,6 +16,7 @@
         <module>lambda-stream</module>
         <module>io-stream</module>
         <module>common-algorithm</module>
+        <module>reflect-study</module>
     </modules>
 
     <properties>
