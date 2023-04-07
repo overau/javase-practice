@@ -1,6 +1,7 @@
 package com.sanfen.ui;
 
 import cn.hutool.core.io.IoUtil;
+import cn.hutool.core.util.StrUtil;
 import com.sanfen.domain.GameInfo;
 
 import javax.swing.*;
@@ -12,6 +13,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Properties;
 import java.util.Random;
 
 /**
@@ -452,7 +455,7 @@ public class GameJframe extends JFrame implements KeyListener, ActionListener {
         } else if (source == accountItem) {
             System.out.println("公众号");
             JDialog jDialog = new JDialog();
-            JLabel jLabel = new JLabel(new ImageIcon(GameConstants.ACCOUNT_IMAGE));
+            JLabel jLabel = new JLabel(new ImageIcon(this.getAccountImage()));
             jLabel.setBounds(0, 0, 258, 258);
             jDialog.add(jLabel);
             // 设置弹框大小
@@ -513,6 +516,23 @@ public class GameJframe extends JFrame implements KeyListener, ActionListener {
                 throw new RuntimeException(ex);
             }
         }
+    }
+
+    /**
+     * 获取配置文件中的广告图片路径
+     * <p>不存在，使用默认图片路径</p>
+     * @return 广告图片路径
+     */
+    private String getAccountImage() {
+        Properties prop = new Properties();
+        try {
+            prop.load(Files.newInputStream(Paths.get(GameConstants.GAME_CONFIG)));
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
+        String account = prop.getProperty("account");
+        account = StrUtil.isBlank(account) ? GameConstants.ACCOUNT_IMAGE : account;
+        return account;
     }
 
     /**

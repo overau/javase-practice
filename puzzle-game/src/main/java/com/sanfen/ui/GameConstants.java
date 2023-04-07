@@ -61,7 +61,7 @@ public class GameConstants {
     /**
      * 公众号图片
      */
-    public static final String ACCOUNT_IMAGE = "puzzle-game\\image\\about.png";
+    public static final String ACCOUNT_IMAGE = "puzzle-game\\image\\about\\about1.png";
 
     /**
      * 女孩图片文件夹: 包含girl1~girl13子文件，每个子文件夹包含对应的图片
@@ -82,5 +82,10 @@ public class GameConstants {
      * 游戏存档数据位置
      */
     public static final String GAME_ARCHIVE_FOLDER = "puzzle-game\\data\\save\\";
+
+    /**
+     * 游戏配置文件
+     */
+    public static final String GAME_CONFIG = "puzzle-game\\config\\game.properties";
 
 }
