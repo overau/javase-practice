@@ -17,6 +17,7 @@
         <module>io-stream</module>
         <module>common-algorithm</module>
         <module>reflect-study</module>
+        <module>dynamic-proxy</module>
     </modules>
 
     <properties>
