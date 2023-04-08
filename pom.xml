@@ -18,6 +18,7 @@
         <module>common-algorithm</module>
         <module>reflect-study</module>
         <module>dynamic-proxy</module>
+        <module>multithread-juc</module>
     </modules>
 
     <properties>
