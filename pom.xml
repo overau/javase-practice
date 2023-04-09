@@ -19,6 +19,7 @@
         <module>reflect-study</module>
         <module>dynamic-proxy</module>
         <module>multithread-juc</module>
+        <module>network-code</module>
     </modules>
 
     <properties>
